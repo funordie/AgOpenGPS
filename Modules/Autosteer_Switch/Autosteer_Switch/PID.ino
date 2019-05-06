@@ -33,8 +33,28 @@ void calcSteeringPID(void)
 #endif
 
  }
-
+//TMP
+//#define Output_Driver 4
+//#define VALVE_LEFT 1
+//#define VALVE_RIGHT 1
 //#########################################################################################
+#if (Output_Driver == 4 && VALVE_LEFT && VALVE_RIGHT)
+void motorDrive(void) {
+#define DEADBAND 1.0
+  if( abs(steerAngleError) <= DEADBAND) {
+	  digitalWrite(VALVE_LEFT, LOW);
+	  digitalWrite(VALVE_RIGHT, LOW);
+  }
+  else if(steerAngleError > 0) {
+	  digitalWrite(VALVE_LEFT, HIGH);
+	  digitalWrite(VALVE_RIGHT, LOW);
+  }
+  else {
+	  digitalWrite(VALVE_LEFT, LOW);
+	  digitalWrite(VALVE_RIGHT, HIGH);
+  }
+}
+#endif
 
 #if (Output_Driver == 1) //Steering Motor + Cytron MD30C Driver
 void motorDrive(void) 

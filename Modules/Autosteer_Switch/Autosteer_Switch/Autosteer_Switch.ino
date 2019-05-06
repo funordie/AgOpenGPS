@@ -2,9 +2,10 @@
 //### Setup Zone ###########################################################################################
 //##########################################################################################################
   
-  #define Output_Driver 2      // 1 =  Steering Motor + Cytron MD30C Driver
+  #define Output_Driver 4      // 1 =  Steering Motor + Cytron MD30C Driver
                                // 2 =  Steering Motor + IBT 2  Driver
                                // 3 =  Steering Motor + JRK 2 Driver (see https://github.com/aortner/jrk)
+							   // 4 =  Steering valve VALVE_LEFT and VALVE_RIGHT
  
   #define Output_Invert 0      // 1 = reverse output direction (Valve & Motor)
 
@@ -32,8 +33,9 @@
                                         // set to 1 if up to 8 uTurn Relays will be used (only Serial Mode)
   
   #define useSteerSwitch 0              // set to 1 if a Steerswitch is installed
-  #define PinMapping 0                  // 0 = default Mapping (like the included Schematics)
+  #define PinMapping 2                  // 0 = default Mapping (like the included Schematics)
                                         // 1 = PCB Basic Autosteer
+										// 2 = default Mapping mod by ipaev
   
   //Ethernet Details
   #define EtherNet 0      // 0 = Serial/USB communcation with AOG
@@ -65,7 +67,7 @@
   //#define RELAY7_PIN 12  //PB4  serial Mode only
   //#define RELAY8_PIN 13  //PB5  serial Mode only
 
-#else // (PinMapping == 1)
+#elif (PinMapping == 1 ) // (PinMapping == 1)
 // PCB Basic Autosteer
   #define STEERSW_PIN 6  //PD6
   #define WORKSW_PIN  8  //PB0
@@ -81,7 +83,24 @@
   #define RELAY2_PIN A3  //PC3
   //#define RELAY3_PIN A0  //PC0
   //#define RELAY4_PIN A1  //PC1
-  
+#elif (PinMapping == 2 )  // Default Mapping mod by ipaev
+  #define STEERSW_PIN 3  //PD3
+  #define WORKSW_PIN  4  //PD4
+  #define VALVE_LEFT  5  /*PD5 LEFT VALVE*/
+  #define VALVE_RIGHT 6  /*PD6 RIGHT VALVE*/
+  #define LED_PIN     7  //PD7 Autosteer LED
+  #define W_A_S      A0  //PC0 Wheel Angle Sensor
+  #define Dogs2_Roll A1  //PC1 EADOGS2 Inclinometer
+  //ethercard 10,11,12,13
+  #define RELAY1_PIN 8   //PB0
+  #define RELAY2_PIN 9   //PB1
+  #define RELAY3_PIN A2  //PC2
+  #define RELAY4_PIN A3  //PC3
+  //#define RELAY5_PIN 10  //PB2  serial Mode only
+  //#define RELAY6_PIN 11  //PB3  serial Mode only
+  //#define RELAY7_PIN 12  //PB4  serial Mode only
+  //#define RELAY8_PIN 13  //PB5  serial Mode only
+
   
 #endif
 
@@ -207,9 +226,21 @@ void setup()
   //keep pulled high and drag low to activate, noise free safe    
   pinMode(WORKSW_PIN, INPUT_PULLUP);    
   pinMode(STEERSW_PIN, INPUT_PULLUP);   
+#ifdef DIR_PIN
   pinMode(DIR_PIN, OUTPUT);            // direction pin of PWM Board
+#endif
+#ifdef PWM1_PIN
   pinMode(PWM1_PIN, OUTPUT);           // PWM pin
+#endif
   pinMode(LED_PIN, OUTPUT);            // Autosteer LED indicates AS on
+
+  #ifdef VALVE_LEFT
+  	  pinMode(VALVE_LEFT, OUTPUT); //left valve
+  #endif
+
+  #ifdef VALVE_RIGHT
+	  pinMode(VALVE_RIGHT, OUTPUT); //right valve
+  #endif
   
   #ifdef IMPSW_PIN
       pinMode(IMPSW_PIN, INPUT_PULLUP); //third Switch
